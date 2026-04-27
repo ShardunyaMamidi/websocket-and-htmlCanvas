@@ -17,10 +17,10 @@ function connect() {
     // Hide STOMP debug logs in console if it gets too noisy
     stompClient.debug = null;
 
-    stompClient.connect({}, function (frame) {
+    stompClient.connect({}, frame => {
         console.log('Connected as: ' + clientId);
 
-        stompClient.subscribe('/topic/location', function (message) {
+        stompClient.subscribe('/topic/location', message => {
             const data = JSON.parse(message.body);
 
             // OPTIMISTIC UI: Only draw if the message is from SOMEONE ELSE
@@ -31,6 +31,11 @@ function connect() {
             // Still update the coordinate list for everyone
             displayCoordinate(data.x, data.y, data.senderId);
         });
+
+        stompClient.subscribe('/topic/chat', (message) => {
+            const chatData = JSON.parse(message.body);
+            renderMessage(chatData);
+        })
     });
 }
 
@@ -108,6 +113,26 @@ function displayCoordinate(x, y, sender) {
     if (coordList.childNodes.length > 50) {
         coordList.removeChild(coordList.lastChild);
     }
+}
+
+function sendChatMessage() {
+    const messageContent = document.getElementById('chatInput').value;
+    if (messageContent && stompClient) {
+        const chatMessage = {
+            sender: clientId, // Using the clientId we created earlier
+            content: messageContent,
+            type: 'CHAT'
+        };
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        document.getElementById('chatInput').value = '';
+    }
+}
+
+function renderMessage(message) {
+    const chatBox = document.getElementById('chat-messages');
+    const msgElement = document.createElement('div');
+    msgElement.innerHTML = `<b>${message.sender}:</b> ${message.content}`;
+    chatBox.appendChild(msgElement);
 }
 
 connect();

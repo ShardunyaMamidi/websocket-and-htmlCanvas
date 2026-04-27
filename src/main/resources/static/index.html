@@ -1,26 +1,180 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Collaborative Canvas</title>
+    <title>Collaborative Workspace</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
     <style>
-        .container { display: flex; gap: 20px; padding: 20px; }
-        canvas { border: 2px solid #333; cursor: crosshair; background: #fff; }
-        #coord-list {
-            width: 300px; height: 500px; overflow-y: auto;
-            border: 1px solid #ccc; padding: 10px; font-family: monospace;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212; /* Deep dark background */
+            color: #e0e0e0;
+        }
+
+        /* Main horizontal split */
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            height: 650px;
+        }
+
+        /* Left Side: Canvas */
+        .canvas-section {
+            flex: 0 0 620px;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+
+        canvas {
+            border: 1px solid #444;
+            cursor: crosshair;
+            display: block;
+            background-color: #252525; /* Darker canvas background */
+            border-radius: 4px;
+        }
+
+        /* Right Side: Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 20px;
+            min-width: 320px;
+        }
+
+        /* Panels */
+        .panel {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #coord-section { flex: 1; }
+        #chat-section { flex: 1.5; } /* Give chat a bit more height */
+
+        /* Scrollable areas */
+        .scroll-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #333;
+            padding: 10px;
+            background: #181818;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            border-radius: 6px;
+            color: #00ffcc; /* Matrix-style or neon coordinates */
+        }
+
+        /* Custom Scrollbar for Dark Mode */
+        .scroll-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scroll-area::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 10px;
+        }
+        .scroll-area::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Chat Messages styling */
+        #chat-messages {
+            color: #e0e0e0;
+            font-family: sans-serif;
+        }
+
+        #chat-messages b {
+            color: #7289da; /* Discord-ish blue for usernames */
+        }
+
+        .input-group {
+            display: flex;
+            margin-top: 12px;
+            gap: 8px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: white;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #00adb5;
+        }
+
+        button {
+            padding: 10px 18px;
+            background-color: #00adb5; /* Cyber teal accent */
+            color: #eeeeee;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #007d82;
+        }
+
+        h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #00adb5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <canvas id="drawingCanvas" width="600" height="500"></canvas>
-    <div>
-        <h3>Live Coordinates</h3>
-        <div id="coord-list"></div>
+
+<div class="main-container">
+    <div class="canvas-section">
+        <h3>Shared Drawing Board</h3>
+        <canvas id="drawingCanvas" width="580" height="530"></canvas>
+    </div>
+
+    <div class="sidebar">
+
+        <div id="coord-section" class="panel">
+            <h3>Live Coordinates</h3>
+            <div id="coord-list" class="scroll-area"></div>
+        </div>
+
+        <div id="chat-section" class="panel">
+            <h3>Live Chat</h3>
+            <div id="chat-messages" class="scroll-area"></div>
+            <div class="input-group">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendChatMessage()"/>
+                <button onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+
     </div>
 </div>
-<script src="app.js"></script>
+
+<script src="./app.js"></script>
 </body>
 </html>
