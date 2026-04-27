@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Collaborative Canvas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        .container { display: flex; gap: 20px; padding: 20px; }
+        canvas { border: 2px solid #333; cursor: crosshair; background: #fff; }
+        #coord-list {
+            width: 300px; height: 500px; overflow-y: auto;
+            border: 1px solid #ccc; padding: 10px; font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <canvas id="drawingCanvas" width="600" height="500"></canvas>
+    <div>
+        <h3>Live Coordinates</h3>
+        <div id="coord-list"></div>
+    </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
