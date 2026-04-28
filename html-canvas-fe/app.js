@@ -1,5 +1,10 @@
-// Unique ID for this session to distinguish 'self' from 'others'
-const clientId = Math.random().toString(36).substring(2, 9);
+// Parse URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const roomId = urlParams.get('room') || 'lobby';
+const username = urlParams.get('user') || 'Guest' + Math.floor(Math.random() * 100);
+
+// Use username for clientId instead of random string
+const clientId = username;
 
 let stompClient = null;
 const canvas = document.getElementById('drawingCanvas');
@@ -10,9 +15,12 @@ let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
+document.querySelector('#coord-section h3').innerText = `Live: Room ${roomId}`;
+document.querySelector('#chat-section h3').innerText = `Chatting as: ${username}`;
+
 // 1. WebSocket Connection
 function connect() {
-    const socket = new SockJS('/ws-game');
+    const socket = new SockJS('http://localhost:8080/ws-game');
     stompClient = Stomp.over(socket);
     // Hide STOMP debug logs in console if it gets too noisy
     stompClient.debug = null;
@@ -20,7 +28,7 @@ function connect() {
     stompClient.connect({}, frame => {
         console.log('Connected as: ' + clientId);
 
-        stompClient.subscribe('/topic/location', message => {
+        stompClient.subscribe(`/topic/${roomId}/location`, message => {
             const data = JSON.parse(message.body);
 
             // OPTIMISTIC UI: Only draw if the message is from SOMEONE ELSE
@@ -32,10 +40,16 @@ function connect() {
             displayCoordinate(data.x, data.y, data.senderId);
         });
 
-        stompClient.subscribe('/topic/chat', (message) => {
+        stompClient.subscribe(`/topic/${roomId}/chat`, (message) => {
             const chatData = JSON.parse(message.body);
             renderMessage(chatData);
         })
+
+        stompClient.send(`/app/${roomId}/chat.addUser`, {}, JSON.stringify({
+            sender: username,  // This comes from your Lobby URL params
+            type: 'JOIN',
+            content: username + " joined the drawing board!"
+        }));
     });
 }
 
@@ -54,7 +68,7 @@ function throttle(callback, delay) {
 // 3. The "Send" logic (Throttled to 60fps)
 const sendCoordinates = throttle((x, y, lx, ly) => {
     if (stompClient && stompClient.connected) {
-        stompClient.send("/app/get-location", {}, JSON.stringify({
+        stompClient.send(`/app/${roomId}/get-location`, {}, JSON.stringify({
             x: x,
             y: y,
             lastX: lx,
@@ -123,7 +137,7 @@ function sendChatMessage() {
             content: messageContent,
             type: 'CHAT'
         };
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        stompClient.send(`/app/${roomId}/chat.sendMessage`, {}, JSON.stringify(chatMessage));
         document.getElementById('chatInput').value = '';
     }
 }
