@@ -1,0 +1,15 @@
+<div class="lobby-card">
+    <h1>Sketch It Out!</h1>
+
+    <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" [(ngModel)]="username" id="username" placeholder="Enter your name...">
+    </div>
+
+    <div class="input-group">
+        <label for="roomid">Room ID</label>
+        <input type="text" [(ngModel)]="roomId" id="roomid" placeholder="e.g. PixelParty" (keyup.enter)="joinRoom()">
+    </div>
+
+    <button (click)="joinRoom()">Enter Room</button>
+</div>
