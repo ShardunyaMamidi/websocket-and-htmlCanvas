@@ -12,12 +12,12 @@ import lombok.Setter;
 public class Coordinate {
     private Integer x;
     private Integer y;
-    private Integer lastX;
-    private Integer lastY;
     private String senderId;
+    private DrawingType type;
+    private String color;
+    private Integer brushSize;
 
-    public Coordinate(Integer x, Integer y) {
-        this.x = x;
-        this.y = y;
+    public enum DrawingType {
+        START, DRAW, END
     }
 }

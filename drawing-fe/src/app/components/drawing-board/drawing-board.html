@@ -1,32 +1,51 @@
 <div class="main-container">
-    <div class="canvas-section">
-        <h3>Room: {{roomId}}</h3>
-        <canvas #canvas width="600" height="500" (mousedown)="startDrawing($event)" (mousemove)="onMouseMove($event)"
-            (mouseup)="isDrawing = false">
-        </canvas>
+  <div class="canvas-section">
+    <h3>Room: {{ roomId || '—' }}</h3>
+
+    @if (sessionError) {
+      <p class="error">{{ sessionError }}</p>
+      <button type="button" (click)="goToLobby()">Back to lobby</button>
+    }
+
+    <canvas
+      #canvas
+      width="600"
+      height="500"
+      [class.hidden]="!!sessionError"
+      (mousedown)="startDrawing($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="stopDrawing()"
+      (mouseleave)="stopDrawing()"
+    ></canvas>
+  </div>
+
+  <div class="sidebar">
+    <div class="panel" id="coord-section">
+      <h3>Live Coordinates</h3>
+      <div class="scroll-area">
+        @for (c of coordinates; track $index) {
+          <div>
+            <strong>{{ c.senderId }}:</strong> {{ c.x }}, {{ c.y }} ({{ c.type }})
+          </div>
+        }
+      </div>
     </div>
 
-    <div class="sidebar">
-        <div class="panel" id="coord-section">
-            <h3>Live Coordinates</h3>
-            <div class="scroll-area">
-                <div *ngFor="let c of coordinates">
-                    <strong>{{c.senderId}}:</strong> {{c.x}}, {{c.y}}
-                </div>
-            </div>
-        </div>
-
-        <div class="panel" id="chat-section">
-            <h3>Chat</h3>
-            <div class="scroll-area">
-                <div *ngFor="let m of messages">
-                    <b>{{m.sender}}:</b> {{m.content}}
-                </div>
-            </div>
-            <div class="input-group">
-                <input #chatInput type="text" (keyup.enter)="sendMessage(chatInput.value); chatInput.value=''">
-                <button (click)="sendMessage(chatInput.value); chatInput.value=''">Send</button>
-            </div>
-        </div>
+    <div class="panel" id="chat-section">
+      <h3>Chat</h3>
+      <div class="scroll-area">
+        @for (m of messages; track $index) {
+          <div><b>{{ m.sender }}:</b> {{ m.content }}</div>
+        }
+      </div>
+      <div class="input-group">
+        <input
+          #chatInput
+          type="text"
+          (keyup.enter)="sendMessage(chatInput.value); chatInput.value = ''"
+        />
+        <button (click)="sendMessage(chatInput.value); chatInput.value = ''">Send</button>
+      </div>
     </div>
+  </div>
 </div>

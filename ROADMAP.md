@@ -24,11 +24,11 @@ A phased plan to evolve this project from a **collaborative drawing + chat proto
 
 | Status | ID | Task | Summary |
 |--------|-----|------|---------|
-| [ ] | 0.1 | Project README & runbook | Document how to start backend/frontend, ports, env vars, and intended game flow. |
-| [ ] | 0.2 | Align domain models | Unify `Coordinate.DrawingType` with frontend (`START` / `DRAW` / `END`); include `senderId`, `color`, `brushSize` in `DrawAction` for correct history replay. |
-| [ ] | 0.3 | Wire lobby to backend | On join, register/update `Player` with `roomId`, `name`, `isActive`; stop relying only on query params. |
-| [ ] | 0.4 | Room registry | Create/join rooms, list players in room, max capacity; in-memory first, DB optional later. |
-| [ ] | 0.5 | Session / identity | Stable `playerId` per browser (e.g. UUID in `localStorage`) so reconnects and scoring don’t depend on display name alone. |
+| [x] | 0.1 | Project README & runbook | Document how to start backend/frontend, ports, env vars, and intended game flow. |
+| [x] | 0.2 | Align domain models | Unify `Coordinate.DrawingType` with frontend (`START` / `DRAW` / `END`); include `senderId`, `color`, `brushSize` in `DrawAction` for correct history replay. |
+| [x] | 0.3 | Wire lobby to backend | On join, register/update `Player` with `roomId`, `name`, `isActive`; stop relying only on query params. |
+| [x] | 0.4 | Room registry | Create/join rooms, list players in room, max capacity; in-memory first, DB optional later. |
+| [x] | 0.5 | Session / identity | Stable `playerId` per browser (e.g. UUID in `localStorage`) so reconnects and scoring don’t depend on display name alone. |
 
 ---
 
@@ -104,7 +104,7 @@ A phased plan to evolve this project from a **collaborative drawing + chat proto
 | [ ] | 6.2 | STOMP message catalog | Document `/app/...` commands vs `/topic/...` events; version DTOs. |
 | [ ] | 6.3 | Scheduled tasks | Server-side timers (`@Scheduled` or per-room executor), not client-only. |
 | [ ] | 6.4 | REST for non-real-time | Room create, word admin, health; gameplay stays on WebSocket. |
-| [ ] | 6.5 | Package hygiene | Rename e.g. `incanvasMemoryController` → `CanvasDebugController`; consistent naming. |
+| [x] | 6.5 | Package hygiene | Rename e.g. `incanvasMemoryController` → `CanvasDebugController`; consistent naming. |
 
 ---
 
@@ -196,7 +196,7 @@ Use this section to note completed milestones (optional).
 | Date | Milestone |
 |------|-----------|
 | — | Roadmap created |
-| | |
+| 2026-05-24 | Phase 0 complete — README, room API, session ID, aligned draw models |
 
 ---
 

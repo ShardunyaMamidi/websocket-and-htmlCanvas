@@ -1,10 +1,11 @@
-body {
+:host {
+    display: block;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
     padding: 20px;
     background-color: #121212;
-    /* Deep dark background */
     color: #e0e0e0;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 /* Main horizontal split */
@@ -30,9 +31,17 @@ canvas {
     border: 1px solid #444;
     cursor: crosshair;
     display: block;
-    background-color: #252525;
-    /* Darker canvas background */
+    background-color: #ffffff;
     border-radius: 4px;
+}
+
+canvas.hidden {
+    display: none;
+}
+
+.error {
+    color: #e74c3c;
+    margin-bottom: 0.75rem;
 }
 
 /* Right Side: Sidebar */

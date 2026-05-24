@@ -63,3 +63,25 @@ button:hover {
     background-color: #00d2da;
     transform: translateY(-2px);
 }
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+    font-size: 0.85rem;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.error {
+    color: #e74c3c;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
